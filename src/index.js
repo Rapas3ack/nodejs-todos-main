@@ -51,7 +51,7 @@ app.post('/users', (request, response) => {
 app.get('/todos', checksExistsUserAccount, (request, response) => {
   const { user } = request;
 
-  return response.json( user.todos );
+  return response.json(user.todos);
 });
 
 app.post('/todos', checksExistsUserAccount, (request, response) => {
@@ -66,7 +66,7 @@ app.post('/todos', checksExistsUserAccount, (request, response) => {
     created_at: new Date(),
   }
   user.todos.push(todo);
-  return response.status(201).send(todo);
+  return response.status(201).json(todo);
 });
 
 app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
@@ -105,13 +105,13 @@ app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
   const { user } = request;
   const { id } = request.params;
 
-  const todo = user.todos.find(todo => todo.id === id);
+  const todoIndex = user.todos.findIndex(todo => todo.id === id);
 
-  if (!todo) {
+  if (todoIndex === -1) {
     return response.status(404).json({ error: 'Todo not found' });
   }
 
-  user.todos = user.todos.filter(todo => todo.id !== id);
+  user.todos.splice(todoIndex, 1);
 
   return response.status(204).json();
 });
